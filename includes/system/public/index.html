@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Shoko Dashboard</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary-color: #6c5ce7;
+            --secondary-color: #00cec9;
+            --background-color: #1e1e2e;
+            --card-background: #2d2d3f;
+            --text-color: #ecf0f1;
+            --border-color: #444455;
+            --hover-color: rgba(108, 92, 231, 0.2);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--background-color);
+            color: var(--text-color);
+            line-height: 1.6;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+            padding-bottom: 15px;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .header h1 {
+            font-size: 2.5em;
+            color: var(--primary-color);
+            font-weight: 700;
+        }
+
+        .date-time {
+            font-size: 1.1em;
+            color: var(--secondary-color);
+            font-weight: 600;
+        }
+
+        .dashboard-grid {
+            display: grid;
+            grid-template-columns: 1fr; /* Default to one column layout */
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .card {
+            background-color: var(--card-background);
+            border-radius: 12px;
+            padding: 20px;
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .card:before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: var(--hover-color);
+            opacity: 0;
+            transition: opacity 0.3s ease;
+            pointer-events: none;
+        }
+
+        .card:hover:before {
+            opacity: 1;
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 12px 25px rgba(0, 0, 0, 0.2);
+        }
+
+        .card h2 {
+            color: var(--primary-color);
+            margin-bottom: 10px;
+            font-size: 1.2em;
+            font-weight: 600;
+        }
+
+        .card .value {
+            font-size: 1.8em;
+            font-weight: bold;
+            color: var(--secondary-color);
+        }
+
+        .footer {
+            text-align: center;
+            margin-top: 40px;
+            padding-top: 20px;
+            border-top: 1px solid var(--border-color);
+            color: var(--text-color);
+            font-size: 0.9em;
+        }
+
+        @media (max-width: 768px) {
+            .header {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+
+            .date-time {
+                margin-top: 10px;
+            }
+
+            .dashboard-grid {
+                grid-template-columns: 1fr 1fr; /* Two columns for tablets */
+            }
+
+            .card .value {
+                font-size: 1.5em;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .dashboard-grid {
+                grid-template-columns: 1fr; /* One column for mobile */
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <header class="header">
+            <h1>Shoko</h1>
+            <div class="date-time" id="currentDateTime"></div>
+        </header>
+
+        <main class="dashboard-grid">
+            <div class="card">
+                <h2>Name</h2>
+                <div class="value" id="botName">Loading...</div>
+            </div>
+            <div class="card">
+                <h2>ID</h2>
+                <div class="value" id="botId">Loading...</div>
+            </div>
+            <div class="card">
+                <h2>Username</h2>
+                <div class="value" id="botUsername">Loading...</div>
+            </div>
+            <div class="card">
+                <h2>Owner</h2>
+                <div class="value" id="botOwner">Loading...</div>
+            </div>
+            <div class="card">
+                <h2>Total Commands</h2>
+                <div class="value" id="commandCount">0</div>
+            </div>
+            <div class="card">
+                <h2>Total Users</h2>
+                <div class="value" id="userCount">0</div>
+            </div>
+            <div class="card">
+                <h2>Total Groups</h2>
+                <div class="value" id="groupCount">0</div>
+            </div>
+            <div class="card">
+                <h2>Uptime</h2>
+                <div class="value" id="uptime">Loading...</div>
+            </div>
+            <div class="card">
+                <h2>OS</h2>
+                <div class="value" id="os">Loading...</div>
+            </div>
+            <div class="card">
+                <h2>RAM Usage</h2>
+                <div class="value" id="ramUsage">Loading...</div>
+            </div>
+            <div class="card">
+                <h2>Ping</h2>
+                <div class="value" id="ping">Loading...</div>
+            </div>
+            <div class="card">
+                <h2>Server Time</h2>
+                <div class="value" id="serverTime">Loading...</div>
+            </div>
+        </main>
+
+        <footer class="footer">
+            <p>© 2023 - 2024 Ajiro. All rights reserved.</p>
+        </footer>
+    </div>
+
+    <script src="/socket.io/socket.io.js"></script>
+    <script>
+        const socket = io();
+
+        function updateDashboard(data) {
+            document.getElementById('botName').textContent = data.botName;
+            document.getElementById('botId').textContent = data.botId;
+            document.getElementById('botUsername').textContent = `@${data.botUsername}`;
+            document.getElementById('botOwner').textContent = data.botOwner;
+            document.getElementById('commandCount').textContent = data.commandCount;
+            document.getElementById('userCount').textContent = data.userCount;
+            document.getElementById('groupCount').textContent = data.groupCount;
+            document.getElementById('uptime').textContent = data.uptime;
+            document.getElementById('os').textContent = data.os;
+            document.getElementById('ramUsage').textContent = data.ramUsage;
+            document.getElementById('ping').textContent = `${data.ping} ms`;
+            document.getElementById('serverTime').textContent = data.serverTime;
+        }
+
+        function updateDateTime() {
+            const now = new Date();
+            document.getElementById('currentDateTime').textContent = now.toLocaleString();
+        }
+
+        socket.on('dashboardUpdate', updateDashboard);
+
+        // Request initial data
+        socket.emit('requestDashboardData');
+
+        // Update date and time every second
+        setInterval(updateDateTime, 1000);
+
+        // Initial update
+        updateDateTime();
+    </script>
+</body>
+</html>
