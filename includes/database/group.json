@@ -5,5 +5,19 @@
         "meme": false,
         "event": true,
         "onlyadmin": false
+    },
+    "-1002177254398": {
+        "ai": false,
+        "bot": true,
+        "meme": false,
+        "event": true,
+        "onlyadmin": false
+    },
+    "-4187844018": {
+        "ai": false,
+        "bot": true,
+        "meme": false,
+        "event": true,
+        "onlyadmin": false
     }
 }

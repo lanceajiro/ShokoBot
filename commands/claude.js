@@ -9,12 +9,12 @@ exports.config = {
     usage: ['<query>']
 };
 
-exports.initialize = async function ({ bot, chatId, userId, msg }) {
+exports.initialize = async function ({ bot, chatId, userId, msg, args, usages }) {
     try {
-        const userMessage = msg.text.split(' ').slice(1).join(' '); // Extract prompt from message
+        const userMessage = args.join(' '); // Extract prompt from message
 
         if (!userMessage) {
-            await bot.sendMessage(chatId, 'Please provide a query. Usage: /claude <query>');
+            await usages();
             return;
         }
 

@@ -27,7 +27,7 @@ exports.initialize = async function ({ bot, chatId, userId, msg, usages, args })
         const waitingMessage = await bot.sendMessage(chatId, 'Jea is thinking...');
 
         // Make a GET request to the API with the provided prompt and userId as id
-        const apiUrl = `https://ajiro-api.onrender.com/jea?ask=${encodeURIComponent(prompt)}&id=${userId}`;
+        const apiUrl = `https://ajiro-api.onrender.com/jea?ask=${encodeURIComponent(prompt)}`;
         const response = await axios.get(apiUrl);
 
         if (response.data.results) {

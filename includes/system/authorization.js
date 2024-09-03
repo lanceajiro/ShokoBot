@@ -3,6 +3,7 @@ const bot = global.client.bot;
 const log = require('./log');
 const data = require('./database');
 
+// Function to request authorization
 const request = (bot, chatId, userId) => {
     const options = {
         reply_markup: {
@@ -33,6 +34,7 @@ ${manualContent}`;
     });
 };
 
+// Function to handle callback query responses
 const response = (bot, callbackQuery) => {
     const userId = callbackQuery.from.id.toString();
     const chatId = callbackQuery.message.chat.id;
@@ -59,6 +61,26 @@ const response = (bot, callbackQuery) => {
         message_id: callbackQuery.message.message_id
     });
 };
+
+// Handle different types of updates
+bot.on('update', (update) => {
+    if (update.message) {
+        const message = update.message;
+
+        // Skip authorization for users who join via an invitation link or are added directly
+        if (message.new_chat_members || (message.left_chat_member && message.left_chat_member.is_bot)) {
+            // Handle users joining or leaving, but do not request authorization
+            return;
+        }
+
+        // If it's a new user message, request authorization
+        if (message.new_chat_member) {
+            request(bot, message.chat.id, message.new_chat_member.id);
+        }
+    } else if (update.callback_query) {
+        response(bot, update.callback_query);
+    }
+});
 
 module.exports = {
     request,
