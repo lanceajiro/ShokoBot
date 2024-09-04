@@ -31,27 +31,19 @@ const bot = new TelegramBot(global.config.token, { polling: true });
 global.client.bot = bot;
 
 const data = require('./includes/system/database');
-const authorization = require('./includes/system/authorization');
 const { listen } = require('./includes/listen');
 const { meme } = require('./includes/system/meme');
 const { startServer } = require('./includes/system/server');
 
 // Function to handle individual message processing
 async function processMessage(msg) {
-    // Log incoming message
+    // Log incoming messag
     logMessage(msg);
 
     // Process group data
     if (['group', 'supergroup'].includes(msg.chat.type)) {
         const groupLog = data.addGroup(msg.chat.id);
         if (groupLog) log.data(groupLog); // Log only if the group was newly added
-    }
-
-    // Check if the user is already in the database
-    if (!global.data.users.has(msg.from.id.toString())) {
-        // If not, send the authorization request
-        authorization.request(bot, msg.chat.id, msg.from.id);
-        return; // Stop further processing until the user is authorized
     }
 
     // Handle ranking up
@@ -75,9 +67,6 @@ function setupBot() {
 
     // Handle incoming messages
     bot.on('message', (msg) => processMessage(msg).catch((error) => log.erro('Error handling message: ' + error.message)));
-
-    // Handle callback queries for authorization
-    bot.on('callback_query', (callbackQuery) => authorization.response(bot, callbackQuery));
 
     // Start the meme cron job
     meme({ bot });
