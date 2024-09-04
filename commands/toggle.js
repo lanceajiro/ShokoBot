@@ -2,7 +2,7 @@ exports.config = {
     name: 'toggle',
     author: 'Lance Cochangco',
     access: 'admin',
-    description: 'Toggle AI, Bot, Meme, or Event settings for this group or view current status.',
+    description: 'Toggle AI, Bot, Meme, OnlyAdmin, or Event settings for this group or view current status.',
     category: 'group',
     usage: [
         '[ ai | bot | meme | event | onlyadmin ] on',
