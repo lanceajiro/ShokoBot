@@ -1,9 +1,10 @@
 const fs = require('fs');
-const restartStatusFile = __ dirname + './restartStatus.json';
+const path = require('path'); // Use path for better path management
+const restartStatusFile = path.join(__dirname, './restartStatus.json'); // Correct __dirname usage
 
 // Sleep function to introduce delays
 async function sleep(ms) {
-  return await new Promise(resolve => setTimeout(resolve, ms));
+  return new Promise(resolve => setTimeout(resolve, ms));
 }
 
 exports.config = {
