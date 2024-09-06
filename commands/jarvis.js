@@ -29,7 +29,7 @@ exports.initialize = async function ({ bot, chatId, userId, msg, usages, args })
         // Make a POST request to the AI model with the user’s message
         const apiUrl = 'https://free-ai-models.vercel.app/v1/chat/completions';
         const response = await axios.post(apiUrl, {
-            model: 'gpt-3.5-turbo',
+            model: 'gpt-4',
             messages: [
                 { 
                     role: 'system', 
