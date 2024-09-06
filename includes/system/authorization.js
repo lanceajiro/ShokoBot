@@ -42,12 +42,12 @@ const response = async (bot, callbackQuery) => {
     }
 
     const action = dataParts[1];
-    const targetUserId = dataParts[2];
+   /* const targetUserId = dataParts[2];
 
     if (userId !== targetUserId) {
         await bot.answerCallbackQuery(callbackQuery.id, { text: 'This action is not for you.' });
         return;
-    }
+    } */
 
     let responseText;
     if (action === 'agree') {
