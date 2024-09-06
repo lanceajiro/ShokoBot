@@ -1,5 +1,5 @@
 const fs = require('fs');
-const restartStatusFile = './restartStatus.json';
+const restartStatusFile = __ dirname + './restartStatus.json';
 
 // Sleep function to introduce delays
 async function sleep(ms) {
