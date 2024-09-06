@@ -28,7 +28,7 @@ To use the bot's features, you need to agree to the following policy:
 
 ${manualContent}
 
-If you agree, you'll be able to use all bot features. If you disagree, you can still send messages, but won't be able to use bot commands or AI features.`;
+If you agree, you'll be able to use all bot features. If you disagree you won't be able to use bot commands or AI features until you agree.`;
 
         bot.sendMessage(chatId, policyMessage, options);
     });
@@ -38,6 +38,13 @@ const response = async (bot, callbackQuery) => {
     const userId = callbackQuery.from.id.toString();
     const chatId = callbackQuery.message.chat.id;
     const dataParts = callbackQuery.data.split('_');
+    
+    // Check if this is an authorization action
+    if (dataParts[0] !== 'auth') {
+        // This is not an authorization action, so we ignore it
+        return;
+    }
+
     const action = dataParts[1];
     const targetUserId = dataParts[2];
 
@@ -53,6 +60,10 @@ const response = async (bot, callbackQuery) => {
         responseText = 'Thank you for agreeing! You have been registered and can now use all bot features.';
     } else if (action === 'disagree') {
         responseText = 'You disagreed with the policy. You can still send messages, but won\'t be able to use bot commands or AI features.';
+    } else {
+        // This is an unknown action for the auth module
+        await bot.answerCallbackQuery(callbackQuery.id, { text: 'Invalid authorization action.' });
+        return;
     }
 
     try {
